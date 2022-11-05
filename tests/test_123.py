@@ -5,6 +5,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 def test_eight_components():
+    o = webdriver.ChromeOptions
+    o.headless = True
     driver = webdriver.Chrome(
         service=ChromeService(executable_path=ChromeDriverManager().install())
     )
