@@ -5,7 +5,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 def test_eight_components():
-    driver = webdriver.Chrome(service=ChromeService(executable_path=ChromeDriverManager().install()))
+    driver = webdriver.Chrome(
+        service=ChromeService(executable_path=ChromeDriverManager().install())
+    )
 
     driver.get("https://www.selenium.dev/selenium/web/web-form.html")
 
