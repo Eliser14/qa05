@@ -33,7 +33,7 @@ jobs:
         uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: beta
-        run: chrome --version
+          run: chrome --version
 #        run: sudo apt-get install -y chromium
       - name: Chrome version
         run: chrome --version
