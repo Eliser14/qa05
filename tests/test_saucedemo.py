@@ -5,7 +5,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from pages.base_page import *
+# from pages.base_page import *
 
 
 @pytest.fixture(scope="function")
@@ -27,7 +27,7 @@ def test_user_can_signin(driver):
     login_input.send_keys("standard_user")
     password_input = driver.find_element(By.ID, "password")
     password_input.send_keys("secret_sauce")
-    time.sleep(2)
+    # time.sleep(2)
     driver.find_element(By.ID, "login-button").click()
     assert "inventory" in driver.current_url
     time.sleep(2)
