@@ -8,7 +8,7 @@ def test_example():
     o.headless = True
 
     driver = webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()), options=0
+        service=ChromeService(ChromeDriverManager().install()), options=o
     )
 
     driver.get("https://www.selenium.dev/selenium/web/web-form.html")
