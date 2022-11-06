@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Eliser14"]
 readme = "README.md"
-#packages = [{include = "sausdemo_05"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
