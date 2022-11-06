@@ -11,7 +11,11 @@ from selenium.webdriver.common.by import By
 
 @pytest.fixture(scope="function")
 def driver():
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    o = webdriver.ChromeOptions()
+    o.headless = True
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()), options=o
+    )
     yield driver
     driver.quit()
 
