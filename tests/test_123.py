@@ -7,12 +7,12 @@ from selenium.webdriver.common.by import By
 
 
 def test_example():
-    # o = webdriver.ChromeOptions()
-    # o.headless = True
+    o = webdriver.ChromeOptions()
+    o.headless = True
 
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    #     , options=o
-    # )
+    driver = webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()), options=o
+    )
 
     driver.get("https://www.selenium.dev/selenium/web/web-form.html")
 
