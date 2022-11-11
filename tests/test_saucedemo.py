@@ -3,10 +3,8 @@ import time
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
-
-from pages.login_page import *
-from pages.inventory_page import *
 
 
 @pytest.fixture(scope="function")  ####### for github actions
@@ -32,15 +30,13 @@ link_inv = "https://www.saucedemo.com/inventory.html"
 
 
 def test_standart_user_can_signin(driver):
-    # page = BasePage(browser, link_Main)
-    # page.open_page()
     driver.get(link_Main)
     assert driver.title == "Swag Labs"
     login_input = driver.find_element(By.ID, "user-name")
     login_input.send_keys("standard_user")
     password_input = driver.find_element(By.ID, "password")
     password_input.send_keys("secret_sauce")
-    time.sleep(2)
+    # time.sleep(2)
     driver.find_element(By.ID, "login-button").click()
     assert "inventory" in driver.current_url
     # time.sleep(2)
@@ -61,11 +57,17 @@ def test_locked_out_user(driver):
 
 
 def test_add_items(driver):
-    page = BasePage(driver, link_Main)
-    page.open_page()
-    page = LoginPage(driver, link_Main)
-    page.register_standart_user(login="standard_user", password="secret_sauce")
+    driver.get(link_Main)
+    assert driver.title == "Swag Labs"
+    login_input = driver.find_element(By.ID, "user-name")
+    login_input.send_keys("standard_user")
+    password_input = driver.find_element(By.ID, "password")
+    password_input.send_keys("secret_sauce")
     time.sleep(2)
-    page = InventoryPage(driver, link_inv)
-    page.add_to_cart_backpack_inventory()
+    driver.find_element(By.ID, "login-button").click()
+    assert "inventory" in driver.current_url
+    driver.find_element(By.ID, "add-to-cart-sauce-labs-backpack").click()
+    driver.find_element(By.ID, "shopping_cart_container").click()
+    assert "cart" in driver.current_url
+    assert "Sauce Labs Backpack" in driver.find_element(By.ID, "item_4_title_link").text
     time.sleep(2)

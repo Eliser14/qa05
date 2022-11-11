@@ -23,3 +23,6 @@ class InventoryPage(BasePage):
             "Sauce Labs Backpack"
             in self.driver.find_element(By.ID, "item_4_title_link").text
         )
+
+    def change_quantity_in_cart(self):
+        self.add_to_cart_backpack_inventory()
