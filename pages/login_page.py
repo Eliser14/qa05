@@ -18,6 +18,14 @@ class LoginPage(BasePage):
         assert self.driver.find_element(*LOGIN_BTN)
 
     ################################################################
+    def signin_4_username(self, driver, login, password):
+        username_input = driver.find_element(By.ID, "user-name")
+        username_input.send_keys(login)
+        password_input = driver.find_element(By.ID, "password")
+        password_input.send_keys(password)
+        driver.find_element(By.ID, "login-button").click()
+
+    ################################################################
     def signin_standart_user(self, login="login", password="password"):
         username_input = self.driver.find_element(By.ID, "user-name")
         username_input.send_keys(login)
