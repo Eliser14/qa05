@@ -32,7 +32,6 @@ def test_standart_user_can_signin(driver):
     # time.sleep(2)
     driver.find_element(By.ID, "login-button").click()
     assert "inventory" in driver.current_url
-    # time.sleep(2)
 
 
 def test_locked_out_user(driver):
