@@ -26,12 +26,12 @@ class LoginPage(BasePage):
         driver.find_element(By.ID, "login-button").click()
 
     ################################################################
-    def signin_standart_user(self, login="login", password="password"):
-        username_input = self.driver.find_element(By.ID, "user-name")
-        username_input.send_keys(login)
-        password_input = self.driver.find_element(By.ID, "password")
-        password_input.send_keys(password)
-        self.driver.find_element(*LOGIN_BTN).click()
+    # def signin_standart_user(self, login="login", password="password"):
+    #     username_input = self.driver.find_element(By.ID, "user-name")
+    #     username_input.send_keys(login)
+    #     password_input = self.driver.find_element(By.ID, "password")
+    #     password_input.send_keys(password)
+    #     self.driver.find_element(*LOGIN_BTN).click()
 
     def should_go_on_product_page(self):
         assert "inventory" in self.driver.current_url
