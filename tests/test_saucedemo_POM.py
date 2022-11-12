@@ -38,13 +38,14 @@ link_Cart = "https://www.saucedemo.com/cart.html"
 #     page.should_be_login_form()
 #     page.signin_empty_login_valid_password()
 #     time.sleep(2)
-def test_signin_4_username(driver, login, password):
-    page = BasePage
-    page.open_page()
-    page = LoginPage
-    page.should_be_login_form()
-    page.signin_4_username()
-    page.should_go_on_product_page()
+
+# def test_signin_4_username(driver, login, password):
+#     page = BasePage
+#     page.open_page()
+#     page = LoginPage
+#     page.should_be_login_form()
+#     page.signin_4_username()
+#     page.should_go_on_product_page()
 
 
 def test_add_items(driver):

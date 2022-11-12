@@ -18,13 +18,6 @@ def driver():
     driver.quit()
 
 
-# @pytest.fixture(scope="function")  ###### for pycharm
-# def driver():
-#     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-#     yield driver
-#     driver.quit()
-
-
 link_Main = "https://www.saucedemo.com/"
 link_inv = "https://www.saucedemo.com/inventory.html"
 
