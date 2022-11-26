@@ -1,4 +1,7 @@
 from selenium.webdriver.common.by import By
+
+# from selenium.webdriver.support.wait import WebDriverWait
+
 from .base_page import *
 
 CART_BTN = (By.ID, "shopping_cart_container")
@@ -12,16 +15,19 @@ BIKELIGHT_LABEL = (By.CSS_SELECTOR, "#item_0_title_link .inventory_item_name")
 
 class InventoryPage(BasePage):
     def add_to_cart_backpack_inventory_item(self):
-        self.driver.find_element(*BACKPACK_ADD_BTN).click()
-        assert "id=4" in self.driver.current_url
+        self.d.find_element(*BACKPACK_ADD_BTN).click()
+        assert "id=4" in self.d.current_url
 
     def add_to_cart_backpack_inventory(self):
-        self.driver.find_element(*BACKPACK_ADD_BTN).click()
-        self.driver.find_element(*CART_BTN).click()
-        assert "cart" in self.driver.current_url
+        self.d.implicitly_wait(10)
+        add_item = self.d.find_element(*BACKPACK_ADD_BTN)
+        add_item.click()
+        go_to_cart = self.d.find_element(*CART_BTN)
+        go_to_cart.click()
+        assert "cart" in self.d.current_url
         assert (
             "Sauce Labs Backpack"
-            in self.driver.find_element(By.ID, "item_4_title_link").text
+            in self.d.find_element(By.ID, "item_4_title_link").text
         )
 
     def change_quantity_in_cart(self):

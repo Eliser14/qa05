@@ -1,56 +1,129 @@
 import time
+import os
 
 import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.core.utils import ChromeType
+
+"""
+-----------------------------------------------------
+----------------- DRIVER SELECTION ------------------
+-----------------------------------------------------
+"""
+driver = None
+headless = True
 
 
-@pytest.fixture(scope="function")
-def driver():
+def init_driver_chrome():
     o = webdriver.ChromeOptions()
-    o.headless = True
+    # o.add_argument("--window-size=1600,1080")
+    o.headless = headless
     driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()), options=o
+        service=ChromeService(ChromeDriverManager().install()), options=o
     )
-    yield driver
-    driver.quit()
+    return driver
 
 
-# @pytest.mark.parametrize("test_input,expected",
-#     [("3+5", 8), ("2+4", 6), pytest.param("6*9", 42, marks=pytest.mark.xfail)],)
-# def test_eval(test_input, expected):
-#     assert eval(test_input) == expected
-
-# @pytest.fixture(scope="function",
-#                 params=["login,password",
-#                          [("standard_user", "secret_sauce"),
-#                           ("problem_user", "secret_sauce"),
-#                           ("performance_glitch_user", "secret_sauce"),
-#                           pytest.param("locked_out_user", "secret_sauce", marks=pytest.mark.xfail)]])
-# def signin4(driver, login, password):
-#     driver.get("https://www.saucedemo.com/")
-#     username_input = driver.find_element(By.ID, "user-name")
-#     username_input.send_keys(login)
-#     password_input = driver.find_element(By.ID, "password")
-#     password_input.send_keys(password)
-#     driver.find_element(By.ID, "login-button").click()
+def init_driver_firefox():
+    o = webdriver.FirefoxOptions()
+    # o.add_argument("--width=1600")
+    # o.add_argument("--height=1600")
+    o.headless = headless
+    driver = webdriver.Chrome(
+        service=FirefoxService(GeckoDriverManager().install()), options=o
+    )
+    return driver
 
 
-@pytest.mark.parametrize(
-    "login,password",
-    [
-        ("standard_user", "secret_sauce"),
-        ("problem_user", "secret_sauce"),
-        ("performance_glitch_user", "secret_sauce"),
-        pytest.param("locked_out_user", "secret_sauce", marks=pytest.mark.xfail),
-    ],
+@pytest.fixture(params=["chrome", "firefox"], scope="function", autouse=True)
+def d(request):
+    global driver
+    if driver is not None:
+        return driver
+    if request.param == "chrome":
+        driver = init_driver_chrome()
+    elif request.param == "firefox":
+        driver = init_driver_firefox()
+    else:
+        print("Please pass the correct browser name: {}".format(request.param))
+        raise Exception("driver is not found")
+
+    return driver
+
+
+"""
+-----------------------------------------------------
+--------------- Open and quit browser ---------------
+-----------------------------------------------------
+"""
+
+
+@pytest.fixture(scope="function", autouse=True)
+def print_browser(d):
+    print("\n---------Test started----------\n")
+    d.get("https://www.saucedemo.com/")
+    yield d
+    # d.quit()
+    print("\n---------Test ended-----------\n")
+
+
+"""
+-----------------------------------------------------
+---------- Add screenshots to report html -----------
+-----------------------------------------------------
+"""
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    pytest_html = item.config.pluginmanager.getplugin("html")
+    outcome = yield
+    report = outcome.get_result()
+    extra = getattr(report, "extra", [])
+
+    if report.when == "call":
+        extra.append(pytest_html.extras.url(driver.current_url))
+        xfail = hasattr(report, "wasxfail")
+
+        if (report.skipped and xfail) or (report.failed and not xfail):
+            # test_name = os.environ.get('PYTEST_CURRENT_TEST').split(':')[-1].split(' ')[0]
+            screenshot = driver.get_screenshot_as_base64()
+            extra.append(pytest_html.extras.image(screenshot, ""))
+        report.extra = extra
+
+
+"""
+-----------------------------------------------------
+---------- Sign in with all valid username ----------
+-----------------------------------------------------
+"""
+
+
+@pytest.fixture(
+    params=["standard_user", "problem_user", "performance_glitch_user"],
+    scope="function",
 )
-def test_signin(driver, login, password):
-    driver.get("https://www.saucedemo.com/")
-    username_input = driver.find_element(By.ID, "user-name")
-    username_input.send_keys(login)
-    password_input = driver.find_element(By.ID, "password")
-    password_input.send_keys(password)
-    driver.find_element(By.ID, "login-button").click()
+def login_from_list(d, request):
+    d.get("https://www.saucedemo.com/")
+    d.find_element(By.ID, "user-name").send_keys(request.param)
+    d.find_element(By.ID, "password").send_keys("secret_sauce")
+    d.find_element(By.ID, "login-button").click()
+
+
+# class Credentials:
+#     login_list = ["standard_user", "problem_user", "performance_glitch_user"]
+#     password = "secret_sauce"
+#
+#
+# @pytest.fixture(scope='function')
+# def login_from_list(d):
+#     for name in Credentials.login_list:
+#         d.get("https://www.saucedemo.com/")
+#         d.find_element(By.ID, "user-name").send_keys(name)
+#         d.find_element(By.ID, "password").send_keys(Credentials.password)
+#         d.find_element(By.ID, "login-button").click()

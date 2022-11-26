@@ -12,6 +12,11 @@ selenium = "^4.6.0"
 webdriver-manager = "^3.8.4"
 black = "^22.10.0"
 flake8 = "^5.0.4"
+pytest-xdist = "^3.0.2"
+pytest-order = "^1.0.1"
+allure-pytest = "^2.11.1"
+allure-combine = "^1.0.8"
+pytest-html = "^3.2.0"
 
 
 [build-system]
